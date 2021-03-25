@@ -2,8 +2,9 @@ import tkinter as tk
 from tkinter import *
 from threading import Thread
 from logic import *
-from functionApp import *
 
+
+# Funkcje aplikacji
 
 def getAccouns():
     x = accounts.get("1.0", END)
@@ -14,6 +15,12 @@ def startBot():
     bot = Thread(target=start, args=(
         pLogin.get(), pPassword.get(), getAccouns()))
     bot.start()
+
+
+def writeConsole(text):
+    console.insert(END, text)
+
+# Wyglad okna
 
 
 window = tk.Tk()

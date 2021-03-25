@@ -132,13 +132,12 @@ class Bot():
         time.sleep(1)
 
         # klikanie gornego serduszka
-        obsheart = self.browser.find_element_by_xpath(xpathlist.watched)
+        obsheart = self.browser.find_element_by_xpath(
+            xpathlist.heartNotivication)
         obsheart.click()
         time.sleep(1)
 
-        for i in range(int((self.allfoll)/20)):
-            self.scrollWindow(100, "_01UL2")
-            time.sleep(random.randint(500, 1000)/1000)
+        self.scrollWindow(100, "_01UL2")
 
         # wyciaganie tresci z powiadomien o obsach i laikach
         content = self.browser.find_elements_by_class_name("yrJyr")
@@ -150,7 +149,7 @@ class Bot():
          # przepisywanie do 2 tablicy usuwajac powtorzenia i sprawdzajac warunek
         tab2 = []
         for values in content:
-            if (stab1.count(values.text) > 2 and not(values.text in tab2)):
+            if (tab1.count(values.text) > 2 and not(values.text in tab2)):
                 tab2.append(values.text)
         return tab2
     #
@@ -173,13 +172,13 @@ class Bot():
 
     def prefixToString(self, a):
         a = a.replace(" ", "")
-
+        print("Jestem z zmiany prefixu wartosc a to :" + str(a))
         if("," in a):
             self.y = "00"
         else:
             self.y = "000"
         a = a.replace(",", "")
-
+        print("Jestem z zmiany prefixu wartosc a to :" + str(a))
         if("tys." in a):
             a = a.replace("tys.", "")
             a = a + self.y
@@ -187,7 +186,7 @@ class Bot():
             a = a.replace("mln", "")
             self.y = self.y + "000"
             a = a + self.y
-
+        print("Jestem z zmiany prefixu wartosc a to :" + str(a))
         a = a.replace(" ", "")
         return int(a)
 
@@ -197,9 +196,9 @@ class Bot():
             i = i + upscroll
             x = str(i)
             time.sleep(0.001)
-            self.window = self.browser.find_element_by_class_name(okno)
+            window = self.browser.find_element_by_class_name(okno)
             self.browser.execute_script(
-                "arguments[0].scrollTop = arguments[0].scrollHeight", self.window)
+                "arguments[0].scrollTop = arguments[0].scrollHeight", window)
         upscroll = int(x)
 
     def observation(self):
