@@ -18,17 +18,16 @@ class Bot():
         # klikanie cookie
         cookie = self.browser.find_element_by_xpath(xpathlist.cookie)
         cookie.click()
-        time.sleep(1)
+        time.sleep(3)
 
         # wpisywanie loginu
         pLogin = self.browser.find_element_by_xpath(xpathlist.pLogin)
-        pLogin.click()
+        self.browser.execute_script("arguments[0].click();", pLogin)
         pLogin.send_keys(self.login)
 
         # wpisywanie hasla
-        pPassword = self.browser.find_element_by_xpath(
-            xpathlist.pPassword)
-        pPassword.click()
+        pPassword = self.browser.find_element_by_xpath(xpathlist.pPassword)
+        self.browser.execute_script("arguments[0].click();", pPassword)
         pPassword.send_keys(self.haslo)
 
         # klikanie loguj
@@ -37,7 +36,7 @@ class Bot():
         time.sleep(3)
 
     def getFriends(self):
-        # zczytywanie obserwujacych konta
+        # zczytywanie observacych konta
         self.allFoll = self.prefixToString(
             self.browser.find_element_by_xpath(xpathlist.allFollow).text)
 
@@ -48,7 +47,7 @@ class Bot():
 
         # przewijanie i pobieranie nazw kont wszystkich obsow
         for i in range(int((self.allFoll)/300)):
-            self.scrollWindow(100, "isgrP")
+            self.scrollWindow(20, "isgrP")
             time.sleep(random.randint(500, 1000)/1000)
 
         # przepisywanie nazw kont z listy na tablice
@@ -61,20 +60,20 @@ class Bot():
 
     def checkingAccount(self):
         time.sleep(1)
-        # pobieranie obserwujacych i obserwowanych
-        obserwujacych = self.browser.find_element_by_xpath(
+        # pobieranie observacych i obserwowanych
+        observacych = self.browser.find_element_by_xpath(
             xpathlist.follower).text
         obserwowani = self.browser.find_element_by_xpath(
             xpathlist.watched).text
 
-        # usuwanie z obserwujacych i obserwowanych odstepów i "tys." i "mln"
-        obserwujacych = self.prefixToString(obserwujacych)
-        print("Ilosc obserwujacych: " + str(obserwujacych))
+        # usuwanie z observacych i obserwowanych odstepów i "tys." i "mln"
+        observacych = self.prefixToString(observacych)
+        print("Ilosc observacych: " + str(observacych))
         obserwowani = self.prefixToString(obserwowani)
         print("Ilosc obserwowanych: " + str(obserwowani))
 
         # podejmowanie decyzji o tym czy konto spelnia warunki
-        if (obserwujacych > 10 and obserwujacych < obserwowani):
+        if (observacych > 10 and observacych < obserwowani):
             return True
         else:
             return False
@@ -126,18 +125,17 @@ class Bot():
         time.sleep(2)
 
         # odrzucanie propozycji powiadomien
-        notnow = self.browser.find_element_by_xpath(
-            xpathlist.notNowButton)
+        notnow = self.browser.find_element_by_xpath(xpathlist.notNowButton)
         notnow.click()
         time.sleep(1)
 
         # klikanie gornego serduszka
-        obsheart = self.browser.find_element_by_xpath(
-            xpathlist.heartNotivication)
-        obsheart.click()
         time.sleep(1)
 
-        self.scrollWindow(100, "_01UL2")
+        # self.scrollWindow(100, "_01UL2")
+        self.browser.get('https://www.instagram.com/accounts/activity/')
+        time.sleep(10)
+        self.scroll()
 
         # wyciaganie tresci z powiadomien o obsach i laikach
         content = self.browser.find_elements_by_class_name("yrJyr")
@@ -172,13 +170,13 @@ class Bot():
 
     def prefixToString(self, a):
         a = a.replace(" ", "")
-        print("Jestem z zmiany prefixu wartosc a to :" + str(a))
+
         if("," in a):
             self.y = "00"
         else:
             self.y = "000"
         a = a.replace(",", "")
-        print("Jestem z zmiany prefixu wartosc a to :" + str(a))
+
         if("tys." in a):
             a = a.replace("tys.", "")
             a = a + self.y
@@ -186,7 +184,7 @@ class Bot():
             a = a.replace("mln", "")
             self.y = self.y + "000"
             a = a + self.y
-        print("Jestem z zmiany prefixu wartosc a to :" + str(a))
+
         a = a.replace(" ", "")
         return int(a)
 
@@ -201,8 +199,27 @@ class Bot():
                 "arguments[0].scrollTop = arguments[0].scrollHeight", window)
         upscroll = int(x)
 
+    def scroll(self):
+
+        last_height = self.browser.execute_script(
+            "return document.body.scrollHeight")
+
+        while True:
+            # Scroll down to bottom
+            self.browser.execute_script(
+                "window.scrollTo(0, document.body.scrollHeight);")
+
+            # Wait to load page
+            time.sleep(1)
+
+            # Calculate new scroll height and compare with last scroll height
+            new_height = self.browser.execute_script(
+                "return document.body.scrollHeight")
+            if new_height == last_height:
+                break
+            last_height = new_height
+
     def observation(self):
-        obserwuj = self.browser.find_element_by_xpath(xpathlist.watch)
-        print(obserwuj.text)
-        if (obserwuj.text == "Obserwuj"):
-            obserwuj.click()
+        watch = self.browser.find_element_by_xpath(xpathlist.watch)
+        if (watch.text == "Obserwuj"):
+            watch.click()
